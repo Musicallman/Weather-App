@@ -1,9 +1,9 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {createStore} from 'redux';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { createStore } from 'redux';
 import allReducers from '../reducers/index';
 import SearchLine from './SearchLine';
-import callApi from '../API';
+import { callApi } from '../API';
 import $ from 'jquery';
 import {
     snow,
@@ -25,7 +25,7 @@ class WeatherList extends Component {
 
     componentDidMount() {
         callApi()
-            .then(res => {store.dispatch({type: 'UPDATE_CURRENT_WEATHER', data: res})})
+            .then(res => {store.dispatch({ type: 'UPDATE_CURRENT_WEATHER', data: res })})
             .catch(err => console.log(err));
     }
 
@@ -34,7 +34,7 @@ class WeatherList extends Component {
     renderWeather() {
 
         if (this.props.data.cod === "200") {
-            $('.weekWeather').show();
+           // $('.weekWeather').show();
             $('.currentWeather').css("height", "530px");
             let str = this.props.data.desc;
 
@@ -47,7 +47,7 @@ class WeatherList extends Component {
                 <div>
                     <h3>{this.props.data.date}</h3>
                     <div className='description'>
-                        <img src={`http://openweathermap.org/img/w/${this.props.data.icon}.png`}/>
+                        <img src={`https://openweathermap.org/img/w/${this.props.data.icon}.png`}/>
                         <h3>{this.props.data.desc}</h3>
                     </div>
                     <h1>{this.props.data.temp}</h1>
@@ -57,7 +57,7 @@ class WeatherList extends Component {
         }
 
         else {
-            $('.weekWeather').hide();
+           // $('.weekWeather').hide();
             $('.currentWeather').css("height", "120px");
             return ( <div className="notFound">CITY NOT FOUND!</div>)
         }
@@ -66,25 +66,27 @@ class WeatherList extends Component {
     }
 
     renderList() {
-        if (this.props.data.list) {
+
+        const { list } = this.props.data;
+        if (list) {
             return (
                 <div>
-
-                    {this.props.data.list.map((i, c) =>
-                        <div key={c}>
-                            <p>{i.dt_txt}</p>
-
+                    {
+                        list.map((data, key) =>
+                        <div key={key}>
+                            <h2 className='temp'>{`${Math.round(data.main.temp - 273.15)}${String.fromCharCode(176)}C`}</h2>
                             <div className="line">
-                                <p>{i.weather[0].description}</p>
-                                <img src={`http://openweathermap.org/img/w/${i.weather[0].icon}.png`}/>
+                                <p className='description'>{data.weather[0].description}</p>
+                                <img className='img-logo' src={`https://openweathermap.org/img/w/${data.weather[0].icon}.png`}/>
                             </div>
-                            <h2>{`${Math.round(i.main.temp - 273.15)}${String.fromCharCode(176)}C`}</h2>
+                            <p className='date'>{data.dt_txt}</p>
                             <hr/>
-                        </div>)}
-
+                        </div>)
+                    }
                 </div>
             )
         }
+        return;
     }
 
     render() {
@@ -94,12 +96,12 @@ class WeatherList extends Component {
                 <SearchLine/>
 
                 <div className='currentWeather'>
-                    {this.renderWeather()}
+                    { this.renderWeather() }
 
                 </div>
 
                 <div className='weekWeather'>
-                    {this.renderList()}
+                    { this.renderList() }
                 </div>
 
 
