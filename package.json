@@ -2,11 +2,12 @@
   "name": "spa-app",
   "version": "0.0.1",
   "scripts": {
-    "client": "cd client && npm start",
+    "client": "cd client && npm run dev",
     "server": "node server.js",
-    "dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\""
+    "start": "npm run client && npm run server"
   },
   "dependencies": {
+    "ejs": "^2.6.1",
     "express": "^4.16.2"
   },
   "devDependencies": {
